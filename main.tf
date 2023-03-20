@@ -21,7 +21,7 @@ terraform {
   backend s3 {
     bucket = "devops-interview-state-file"
     key = "network/terraform.tfstate"
-    region = "us=east-1"
+    region = "us-east-1"
   }
 }
 
