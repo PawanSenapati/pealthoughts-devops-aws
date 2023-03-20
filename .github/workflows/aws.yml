@@ -19,7 +19,7 @@ jobs:
          fetch-depth: 0
       
       - id: 'auth'
-        name: Configure AWS credentials 
+        name: Configure AWS credentials
         uses: aws-action/configure-aws-credentials@v1
         with:
          aws-access-key-id: ${{secrets.AWS_ACCESS_KEY}}
