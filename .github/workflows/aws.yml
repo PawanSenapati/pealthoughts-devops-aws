@@ -31,19 +31,19 @@ jobs:
         run: echo "::set-output name=password::$(aws ecr get-lohin-password --region ${{env.AWS_REGION}})"
         
       - name: check ECR authentication
-        run: docker login -u AWS -p ${{ steps.ecr-login.outputs.password }} ${{AWS_ACCOUNT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com
+        run: docker login -u AWS -p ${{ steps.ecr-login.outputs.password }} ${{env.AWS_ACCOUNT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com
         
       - name: Login to AWS ECR
         uses: aws-actions/amazon-ecr-login@v1
         with:
-          registry: ${{AWS_ACCOUNT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com
+          registry: ${{env.AWS_ACCOUNT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com
           username: AWS
           password: ${{ steps.ecr-login.outputs.password }}
           
       - name: Build and Push docker image to ECR
         run: |
-          docker build -t ${{AWS_ACCOUNT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com/my-ecr-repo:${{ github.sha }} .
-          docker push ${{AWS_ACCOUNT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com/my-ecr-repo:${{ github.sha }}
+          docker build -t ${{env.AWS_ACCOUNT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com/my-ecr-repo:${{ github.sha }} .
+          docker push ${{env.AWS_ACCOUNT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com/my-ecr-repo:${{ github.sha }}
           
       - name: Deploy to AWS ECS (run terraform script)
         run: |
