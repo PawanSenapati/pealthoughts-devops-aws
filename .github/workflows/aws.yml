@@ -30,9 +30,6 @@ jobs:
         id: ecr-login
         run: echo "::set-output name=password::$(aws ecr get-lohin-password --region ${{env.AWS_REGION}})"
         
-      - name: check ECR authentication
-        run: docker login -u AWS -p ${{ steps.ecr-login.outputs.password }} ${{env.AWS_ACCOUNT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com
-        
       - name: Login to AWS ECR
         uses: aws-actions/amazon-ecr-login@v1
         with:
