@@ -1,0 +1,52 @@
+name: Deploy Hello World App
+
+on:
+  push:
+    branches:
+      - master
+      
+env:
+  AWS_ACCOUT_ID: 684882368970
+  AWS_REGION: us-east-1
+  
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+        with:
+         fetch-depth: 0
+      
+      - id: 'auth'
+        name: Configure AWS credentials
+        uses: aws-action/configure-aws-credentials@v1
+        with:
+         aws-access-key-id: ${{secrets.AWS_ACCESS_KEY}}
+         aws-secret-access-id: ${{secrets.AWS_SECRET_KEY}}
+         aws-region: ${{env.AWS_REGION}}
+        
+      - name: Get ECR login password
+        id: ecr-login
+        run: echo "::set-output name=password::$(aws ecr get-lohin-password --region ${{env.AWS_REGION}})"
+        
+      - name: check ECR authentication
+        run: docker login -u AWS -p ${{ steps.ecr-login.outputs.password }} ${{AWS_ACCOUT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com
+        
+      - name: Login to AWS ECR
+        uses: aws-actions/amazon-ecr-login@v1
+        with:
+          registry: ${{AWS_ACCOUT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com
+          username: AWS
+          password: ${{ steps.ecr-login.outputs.password }}
+          
+      - name: Build and Push docker image to ECR
+        run: |
+          docker build -t ${{AWS_ACCOUT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com/my-ecr-repo:${{ github.sha }} .
+          docker push ${{AWS_ACCOUT_ID}}.dkr.ecr.${{env.AWS_REGION}}.amazonaws.com/my-ecr-repo:${{ github.sha }}
+          
+      - name: Deploy to AWS ECS (run terraform script)
+        run: |
+          terraform init -input=true #backed config would prompt confirmation. enter: yes
+          terraform plan -var="image_tag=${{ github.sha }}"
+          terraform apply -var="image_tag=${{ github.sha }}" -auto-approve
