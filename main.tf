@@ -12,6 +12,9 @@ provider "aws" {
   region = "us-east-1"
 }
 
+variable "image_tag" {
+  type = string
+}
 #configure aws s3 as backend
 #make sure to give an existing s3 bucket
 terraform {
