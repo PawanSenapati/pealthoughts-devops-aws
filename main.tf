@@ -13,6 +13,7 @@ provider "aws" {
 }
 
 #configure aws s3 as backend
+#make sure to give an existing s3 bucket
 terraform {
   bakend s3 {
     bucket = "devops-interview-state-file"
