@@ -18,7 +18,7 @@ variable "image_tag" {
 #configure aws s3 as backend
 #make sure to give an existing s3 bucket
 terraform {
-  bakend s3 {
+  backend s3 {
     bucket = "devops-interview-state-file"
     key = "network/terraform.tfstate"
     region = "us=east-1"
@@ -85,7 +85,7 @@ data "aws_iam_policy_document" "assume_role_policy" {
     actions = ["sts:AssumeRole"]
     
     principals {
-      type - "Service"
+      type = "Service"
       identifiers = ["ecs-tasks.amazonaws.com"]
     }
   }
