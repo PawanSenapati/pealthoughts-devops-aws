@@ -5,7 +5,7 @@ var express = require('express');
 var app = express()
 
 app.get('/', function(req, res){
-  res.send('Hello World - From PearlThoughts - Test-2');
+  res.send('Hello World - From PearlThoughts - Test-3');
 });
 
 /* istanbul ignore next */
